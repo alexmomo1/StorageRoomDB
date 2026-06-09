@@ -5,5 +5,8 @@ public enum TransactionType {
     CHECKED_OUT,
     RETURNED,
     RETIRED,
-    REPAIRED
+    REPAIRED,
+    DELETED,
+    STATUS_CHANGED,
+    TRANSFERED
 }
