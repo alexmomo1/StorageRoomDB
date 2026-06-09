@@ -1,4 +1,6 @@
-public enum ItemType {
+package com.valex.itstorage.model;
+
+enum ItemType {
     LAPTOP,
     MONITOR,
     UPS,

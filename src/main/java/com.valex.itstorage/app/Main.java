@@ -1,8 +1,11 @@
-package com.valex.itstorage;
+package com.valex.itstorage.app;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import com.valex.itstorage.database.DBManager;
+import com.valex.itstorage.model.Item;
+import com.valex.itstorage.model.Transaction;
 
 public class Main {
     static void main(String[] args) {

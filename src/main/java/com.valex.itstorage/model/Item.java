@@ -1,4 +1,4 @@
-package com.valex.itstorage;
+package com.valex.itstorage.model;
 import java.time.LocalDate;
 
 public class Item {

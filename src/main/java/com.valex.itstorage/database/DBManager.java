@@ -1,4 +1,4 @@
-package com.valex.itstorage;
+package com.valex.itstorage.database;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;

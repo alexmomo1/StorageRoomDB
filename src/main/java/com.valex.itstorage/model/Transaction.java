@@ -1,4 +1,4 @@
-package com.valex.itstorage;
+package com.valex.itstorage.app;
 
 import java.time.LocalDate;
 
