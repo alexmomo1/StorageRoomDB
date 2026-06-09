@@ -20,14 +20,16 @@ public class DBManager {
     private void createTable() throws SQLException {
         String sql = """
             CREATE TABLE IF NOT EXISTS items (
-                unitNB TEXT PRIMARY KEY,
+                unitNB TEXT UNIQUE PRIMARY KEY,
                 shortDescr TEXT NOT NULL,
                 statusE1 TEXT NOT NULL,
                 sysAdmin TEXT NOT NULL,
                 url TEXT,
+                assignedTo TEXT,
+                jobSite
                 used INTEGER NOT NULL CHECK (used IN (0,1)),
-                tossable INTEGER NOT NULL CHECK (used IN (0,1)),
-                date TEXT
+                serialized INTEGER NOT NULL CHECK (used IN (0,1)),
+                date TEXT NOT NULL
             );
         """;
 
@@ -36,7 +38,7 @@ public class DBManager {
         }
     }
 
-    //insert function
+    //insert item function
     public void insertItem(Item item) throws SQLException {
         String sql = """
                 INSERT INTO items(unitNB, shortDescr,
@@ -57,6 +59,8 @@ public class DBManager {
         }
     }
 
+
+    // return list of all items
     public List<Item> getAllItems() throws SQLException{
         List<Item> items = new ArrayList<>();
         String sql = "SELECT * FROM items";
@@ -78,4 +82,20 @@ public class DBManager {
         }
         return items;
     }
+
+    /*
+
+connect()
+createTables()
+addItem(Item item)
+updateItem(Item item)
+deleteItem(int itemId)
+getItemById(int id)
+getAllItems()
+searchItems(String keyword)
+addTransaction(Transaction transaction)
+getTransactionsBetween(String startDate, String endDate)
+getTransactionsForItem(int itemId)
+
+     */
 }
