@@ -1,4 +1,4 @@
-package example;
+package com.valex.itstorage;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;

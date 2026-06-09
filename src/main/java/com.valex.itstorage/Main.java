@@ -1,5 +1,4 @@
-package example;
-
+package com.valex.itstorage;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
