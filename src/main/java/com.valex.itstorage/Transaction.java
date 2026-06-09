@@ -5,7 +5,7 @@ import java.time.LocalDate;
 public class Transaction {
 
     private String unitNB, shortDescr, statusE1, sysAdmin;
-    private boolean used, tossable;
+    private boolean used, serialized;
     private long jobSiteNB;
     private LocalDate date;
 
@@ -15,7 +15,7 @@ public class Transaction {
         this.statusE1 = statusE1;
         this.sysAdmin = sysAdmin;
         this.used = used;
-        this.tossable = tossable;
+        this.serialized = serialized;
         this.jobSiteNB = jobSiteNB;
         this.date = date;
     }

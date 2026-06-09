@@ -4,10 +4,14 @@ import java.time.LocalDate;
 public class Item {
 
     private String unitNB, shortDescr, statusE1, sysAdmin, url;
-    private boolean used, tossable;
-    private LocalDate lastUpdate;
+    private ItemStatus itemStatus;
+    private ItemType itemType;
+    private boolean used, serialized;
+    private LocalDate lastUpdateDate;
 
+    //serialized
     public Item(String unitNB, String shortDescr, String statusE1,
+                String itemStatuss, String itemTypee,
                 String sysAdmin, String url, boolean used) {
         this.unitNB = unitNB;
         this.shortDescr = shortDescr;
@@ -15,8 +19,26 @@ public class Item {
         this.sysAdmin = sysAdmin;
         this.url = url;
         this.used = used;
-        this.tossable = unitNB.isEmpty();
-        this.lastUpdate = LocalDate.now();
+        this.itemStatus = itemStatuss;
+        this.itemType = itemTypee;
+        this.serialized = true;
+        this.lastUpdateDate = LocalDate.now();
+    }
+
+    //non serialized
+    public Item(String shortDescr, String statusE1,
+                String itemStatuss, String itemTypee,
+                String sysAdmin, String url, boolean used) {
+        this.unitNB = null;
+        this.shortDescr = shortDescr;
+        this.statusE1 = statusE1;
+        this.sysAdmin = sysAdmin;
+        this.url = url;
+        this.used = used;
+        this.itemStatus = itemStatuss;
+        this.itemType = itemTypee;
+        this.serialized = false;
+        this.lastUpdateDate = LocalDate.now();
     }
 
 
@@ -29,7 +51,7 @@ public class Item {
     public String getSysAdmin() { return sysAdmin; } // name of whoever added its last update to e1
     public String getUrl() { return url; }
     public boolean isUsed() { return used; } // is it sealed and still in original packaging
-    public boolean isTossable() { return tossable; } // it means it has no asset tag (29JXXXXX)
-    public LocalDate getLastUpdate() { return lastUpdate; }
+    public boolean isSerialized() { return serialized; } // it means it has no asset tag (29JXXXXX)
+    public LocalDate getLastUpdateDate() { return lastUpdateDate; }
 
 }
