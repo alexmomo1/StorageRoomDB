@@ -1,0 +1,243 @@
+InventoryService: where your real logic should live
+This is a very important improvement.
+Instead of this:
+Plain TextMain directly updates itemMain directly inserts transactionMain directly manages status logicShow more lines
+Do this instead:
+Plain TextMain -> InventoryService -> DBManagerShow more lines
+
+Why service layer matters
+Because operations like assign item actually mean:
+
+check item exists
+check item is available
+update the item’s status, assignee, and job site
+insert a transaction
+
+That is business logic, not just SQL.
+
+Example service operations you should have
+JavaaddNewItem(Item item)assignItem(int itemId, String assignedTo, String jobSite, String notes)returnItem(int itemId, String notes)retireItem(int itemId, String notes)changeStatus(int itemId, ItemStatus status, String notes)getInventory()searchInventory(String keyword)getTransactionsBetween(String start, String end)Show more lines
+
+Critical backend rule: item update + transaction insert should happen together
+This is one of the most important design points.
+If you assign an item, you should:
+
+update the item
+create a transaction
+
+If one succeeds and the other fails, your data becomes inconsistent.
+So ideally, use a SQL transaction.
+
+Example concept
+For assignItem():
+Javapublic void assignItem(int itemId, String assignedTo, String jobSite, String notes) {    // 1. find item    // 2. confirm it's available    // 3. update item status to ASSIGNED    // 4. update assignedTo + jobSite    // 5. add transaction of type CHECKED_OUT}``Show more lines
+
+Better version: do it atomically
+Inside DB code:
+Javaconn.setAutoCommit(false);// update items// insert transactionsconn.commit();Show more lines
+If something fails:
+Javaconn.rollback();Show more lines
+That’s very professional and absolutely worth learning.
+
+Minimum complete backend logic for your MVP
+If you want your backend to be “done enough” before GUI, these are the must-have operations.
+
+1. Add item
+Creates item in DB and logs ITEM_ADDED.
+Input
+
+name
+category
+optional asset tag
+quantity
+notes
+
+Output
+
+saved item
+matching transaction
+
+
+2. Assign item
+Updates current state and logs CHECKED_OUT.
+Input
+
+item ID
+assigned employee
+job site
+notes
+
+Business rule
+Only assign if:
+
+item exists
+item is AVAILABLE
+quantity is valid
+
+
+3. Return item
+Updates state to AVAILABLE, clears assignee/job site, logs RETURNED.
+
+4. Retire item
+Updates state to RETIRED, logs RETIRED.
+Do not hard delete immediately unless you really want that behavior.
+
+5. Search items
+Search by:
+
+asset tag
+item name
+assignedTo
+jobSite
+category
+
+
+6. Get all inventory
+Needed for GUI table and reports.
+
+7. Get transactions in date range
+Needed for your report requirement.
+
+Suggested validation rules
+Your backend should enforce these:
+For items
+
+name cannot be blank
+category cannot be blank
+quantity must be greater than 0
+assetTag must be unique if provided
+
+For assignment
+
+item must exist
+item cannot already be retired
+item should usually be available before assignment
+jobSite should not be blank when assigning project equipment
+
+
+Strong recommendation: add these files now
+Before GUI, I’d add these new files:
+
+ItemStatus.java
+Javapackage com.victor.storageroom.model;public enum ItemStatus {    AVAILABLE,    ASSIGNED,    IN_REPAIR,    RETIRED,    LOST}Show more lines
+
+TransactionType.java
+Javapackage com.victor.storageroom.model;public enum TransactionType {    ITEM_ADDED,    CHECKED_OUT,    RETURNED,    TRANSFERRED,    STATUS_CHANGED,    RETIRED}Show more lines
+
+InventoryService.java
+This is where your backend logic should go.
+Even if it starts small, that file will make your app much cleaner.
+
+Suggested Main.java role after restructuring
+Keep Main.java small.
+It should mostly do:
+
+initialize DB
+create tables
+maybe add sample data while testing
+later launch GUI
+
+Example:
+Javapackage com.victor.storageroom.app;import com.victor.storageroom.database.DBManager;public class Main {    public static void main(String[] args) {        DBManager dbManager = new DBManager();        dbManager.createTables();        System.out.println("Database initialized successfully.");    }}Show more lines
+That is clean.
+
+What to do in IntelliJ right now (practical checklist)
+Phase 1 — Restructure
+
+Create package:
+
+com.victor.storageroom
+
+
+Create subpackages:
+
+app
+model
+database
+service
+
+
+Move:
+
+Main.java → app
+Item.java → model
+Transaction.java → model
+DBManager.java → database
+
+
+
+
+Phase 2 — Clean package declarations
+Update each file’s package ...;
+
+Phase 3 — Add enums
+Create:
+
+ItemStatus.java
+TransactionType.java
+
+
+Phase 4 — Define schema
+Make sure items and transactions tables match your class design
+
+Phase 5 — Create service layer
+Add:
+
+InventoryService.java
+
+with methods:
+
+addNewItem(...)
+assignItem(...)
+returnItem(...)
+retireItem(...)
+getAllItems()
+getTransactionsBetween(...)
+
+
+Phase 6 — Test in console before GUI
+Before any interface, confirm:
+
+add item works
+assign works
+return works
+retire works
+transactions are created properly
+
+This is how you save yourself a lot of GUI debugging later.
+
+About your .gitignore
+You said you didn’t start one, but your screenshot actually shows a .gitignore file already in the project root. It may be empty or auto-generated.
+Here’s a good version you can use for this project:
+.ignore# IntelliJ.idea/*.iml# Maven build outputtarget/# Logs*.log# OS files.DS_StoreThumbs.db# SQLite temp files*.db-wal*.db-shmShow more lines
+If your actual database file is just for testing and shouldn’t be stored in Git, you could also ignore:
+.ignore*.dbShow more lines
+But if you want a demo DB in the repo, don’t ignore it.
+
+Best next step with me
+If you want, I can help you in the most useful way possible by doing this one file at a time.
+Best sequence:
+
+I draft the exact final version of Item.java
+then the exact final version of Transaction.java
+then the exact final version of DBManager.java
+then the exact final version of InventoryService.java
+then the exact final version of Main.java
+
+That would give you a clean backend foundation before GUI.
+
+My recommendation
+Send me your code by pasting the contents directly in chat, starting with:
+JavaItem.javaShow more lines
+and I’ll rewrite/refine it into the package structure above.
+If you want, I can also skip straight to giving you a full clean starter backend set of files for:
+
+Item.java
+Transaction.java
+ItemStatus.java
+TransactionType.java
+DBManager.java
+InventoryService.java
+Main.java
+
+so you can paste them into IntelliJ and adapt from there.
