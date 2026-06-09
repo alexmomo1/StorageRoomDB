@@ -3,7 +3,7 @@ import java.time.LocalDate;
 
 public class Item {
 
-    private String unitNB, shortDescr, statusE1, sysAdmin, url;
+    private String unitNB, shortDescr, statusE1, sysAdmin, url, assignedTo;
     private ItemStatus itemStatus;
     private ItemType itemType;
     private boolean used, serialized;
@@ -12,7 +12,7 @@ public class Item {
     //serialized
     public Item(String unitNB, String shortDescr, String statusE1,
                 String itemStatuss, String itemTypee,
-                String sysAdmin, String url, boolean used) {
+                String sysAdmin, String url, boolean used String assignedTo) {
         this.unitNB = unitNB;
         this.shortDescr = shortDescr;
         this.statusE1 = statusE1;
@@ -23,11 +23,12 @@ public class Item {
         this.itemType = itemTypee;
         this.serialized = true;
         this.lastUpdateDate = LocalDate.now();
+        this.assignedTo = assignedTo;
     }
 
     //non serialized
     public Item(String shortDescr, String statusE1,
-                String itemStatuss, String itemTypee,
+                String itemStatuss, String itemTypee, String assignedTo,
                 String sysAdmin, String url, boolean used) {
         this.unitNB = null;
         this.shortDescr = shortDescr;
@@ -39,6 +40,7 @@ public class Item {
         this.itemType = itemTypee;
         this.serialized = false;
         this.lastUpdateDate = LocalDate.now();
+        this.assignedTo = assignedTo;
     }
 
 
