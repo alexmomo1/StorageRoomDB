@@ -1,2 +1,18 @@
 Business logic:
 Assigning items, returning, retiring, creating corresp. transactions
+
+/*
+
+connect()
+createTables()
+addItem(Item item)
+updateItem(Item item)
+deleteItem(int itemId)
+getItemById(int id)
+getAllItems()
+searchItems(String keyword)
+addTransaction(Transaction transaction)
+getTransactionsBetween(String startDate, String endDate)
+getTransactionsForItem(int itemId)
+
+     */

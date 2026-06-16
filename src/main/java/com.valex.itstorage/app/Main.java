@@ -14,40 +14,16 @@ public class Main {
 
         String formattedDate = date.format(formatter);
         System.out.println(formattedDate);
+        DBManager db = null;
 
         try {
-
-            DBManager db = new DBManager();
-            Item item1 = new Item(
-                    "29J61522",
-                    "DELL Performance",
-                    "AV - IT SPARE",
-                    "VAFM",
-                    "https://www.dell.com/en-ca/shop/alienware/gaming/desktops",
-                    false
-            );
-            Item item2 = new Item(
-                    "29J59708",
-                    "DELL  Laptop Pro+ 14",
-                    "AC - SSE",
-                    "VAFM",
-                    "https://www.dell.com/en-ca/shop/alienware/gaming/desktops",
-                    true
-            );
-
-            db.insertItem(item1);
-            db.insertItem(item1);
-            List<Item> items = db.getAllItems();
-
-            for (Item item : items) {
-                System.out.println(
-                        item.getUnitNB() + " | " +
-                        item.getShortDescr() + " | " +
-                        item.getStatusE1()
-                );
-            }
+            db = new DBManager();
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            if (db != null) {
+                db.close();
+            }
         }
     }
 

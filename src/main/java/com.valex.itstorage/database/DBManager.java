@@ -2,6 +2,7 @@ package com.valex.itstorage.database;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import com.valex.itstorage.model.Item;
 
 public class DBManager {
 
@@ -25,11 +26,14 @@ public class DBManager {
                 statusE1 TEXT NOT NULL,
                 sysAdmin TEXT NOT NULL,
                 url TEXT,
+                notes TEXT,
+                itemStatus TEXT NOT NULL,
+                itemType TEXT NOT NULL,
                 assignedTo TEXT,
-                jobSite
+                jobSite TEXT,
                 used INTEGER NOT NULL CHECK (used IN (0,1)),
-                serialized INTEGER NOT NULL CHECK (used IN (0,1)),
-                date TEXT NOT NULL
+                serialized INTEGER NOT NULL CHECK (serialized IN (0,1)),
+                lastUpdateDate TEXT NOT NULL
             );
         """;
 
@@ -42,8 +46,9 @@ public class DBManager {
     public void insertItem(Item item) throws SQLException {
         String sql = """
                 INSERT INTO items(unitNB, shortDescr,
-                statusE1, sysAdmin, url, used, tossable, date)
-                VALUES(?,?,?,?,?,?,?,?)
+                statusE1, sysAdmin, url, notes, itemStatus, itemType, 
+                assignedTo, jobSite, used, serialized, lastUpdateDate)
+                VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)
                 """;
         try(PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, item.getUnitNB());
@@ -51,15 +56,18 @@ public class DBManager {
             pstmt.setString(3, item.getStatusE1());
             pstmt.setString(4, item.getSysAdmin());
             pstmt.setString(5, item.getUrl());
-            pstmt.setInt(6, item.isUsed() ? 1 : 0);
-            pstmt.setInt(7, item.isTossable() ? 1 : 0);
-            pstmt.setString(8, item.getDate().toString());
+            pstmt.setString(6, item.getNotes());
+            pstmt.setString(7, item.getItemStatus().toString())
+            pstmt.setString(8, item.getItemType().toString());
+            pstmt.setString(9, item.getAssignedTo());
+            pstmt.setString(10, item.getJobSite());
+            pstmt.setInt(11, item.isUsed() ? 1 : 0);
+            pstmt.setInt(12, item.isSerialized() ? 1 : 0);
+            pstmt.setString(13, item.getLastUpdateDate().toString());
 
             pstmt.executeUpdate();
         }
     }
-
-
     // return list of all items
     public List<Item> getAllItems() throws SQLException{
         List<Item> items = new ArrayList<>();
@@ -75,7 +83,14 @@ public class DBManager {
                         rs.getString("statusE1"),
                         rs.getString("sysAdmin"),
                         rs.getString("url"),
-                        rs.getInt("used") == 1
+                        rs.getString("notes"),
+                        rs.getString("itemStatus"),
+                        rs.getString("itemType"),
+                        rs.getString("assignedTo"),
+                        rs.getString("jobSite"),
+                        rs.getInt("used") == 1,
+                        rs.getString("serialized") == 1,
+                        LocalDate.parse(rs.getString("lastUpdateDate"))
                 );
                 items.add(item);
             }
@@ -83,7 +98,11 @@ public class DBManager {
         return items;
     }
 
-    /*
+    private Item mapRowToItem(ResultSet rs){
+
+    }
+
+  /*
 
 connect()
 createTables()
@@ -98,4 +117,18 @@ getTransactionsBetween(String startDate, String endDate)
 getTransactionsForItem(int itemId)
 
      */
+
+    public void close(){
+        if (conn != null) {
+            try {
+                if (!conn.isClosed()) {
+                    conn.close();
+                    System.out.println("Database connection closed.");
+                }
+            } catch (SQLException e) {
+                System.err.println("Error closing connection.");
+                e.printStackTrace();
+            }
+        }
+    }
 }
