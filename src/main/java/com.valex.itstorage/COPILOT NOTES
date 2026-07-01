@@ -1,243 +1,68 @@
-InventoryService: where your real logic should live
-This is a very important improvement.
-Instead of this:
-Plain TextMain directly updates itemMain directly inserts transactionMain directly manages status logicShow more lines
-Do this instead:
-Plain TextMain -> InventoryService -> DBManagerShow more lines
+🎯 Recommended plan to hit July 10 (9-day sprint)
+Days 1–2 (July 1–2): Fix & complete the data layer
 
-Why service layer matters
-Because operations like assign item actually mean:
+Fix all bugs above
+Add to DBManager:
 
-check item exists
-check item is available
-update the item’s status, assignee, and job site
-insert a transaction
+deleteItem(String unitNB)
+updateItem(Item item)
+getItemByUnitNB(String unitNB)
+searchItems(String keyword) — WHERE clause across shortDescr, unitNB, itemType, jobSite, assignedTo
 
-That is business logic, not just SQL.
 
-Example service operations you should have
-JavaaddNewItem(Item item)assignItem(int itemId, String assignedTo, String jobSite, String notes)returnItem(int itemId, String notes)retireItem(int itemId, String notes)changeStatus(int itemId, ItemStatus status, String notes)getInventory()searchInventory(String keyword)getTransactionsBetween(String start, String end)Show more lines
+Add transactions table + addTransaction() / getTransactionsForItem()
+Implement mapRowToItem() (currently empty stub)
+Add setters to Item (for status changes)
 
-Critical backend rule: item update + transaction insert should happen together
-This is one of the most important design points.
-If you assign an item, you should:
+Day 3 (July 3): Rewrite Transaction
+Javapublic class Transaction {    private long id;    private String itemUnitNB;      // FK to Item    private TransactionType type;   // uses your enum!    private String performedBy;    private String oldJobSite, newJobSite;    private String notes;    private LocalDate date;    // constructor + getters}Show more lines
+Days 4–5 (July 6–7): MVC + Console UI
+Create these packages:
 
-update the item
-create a transaction
+controller/InventoryController — one method per action (addItem, deleteItem, search, checkOut, return)
+view/ConsoleView — menu loop with Scanner, prints results
+Main just wires them: new ConsoleView(new InventoryController(new DBManager())).run();
 
-If one succeeds and the other fails, your data becomes inconsistent.
-So ideally, use a SQL transaction.
+Days 6–7 (July 8–9): GUI sketch
+For the sketch, I'd suggest JavaFX with SceneBuilder (drag-and-drop, fits Maven well) — or if you want simpler, Swing. Since you don't have an idea yet, here's a minimal MVP GUI layout to consider:
+┌────────────────────────────────────────────┐
+│  IT Storage – Montreal District            │
+├────────────────────────────────────────────┤
+│ [Search: ______________] [🔍] [+ Add Item] │
+├────────────────────────────────────────────┤
+│ UnitNB  │ Desc     │ Type   │ Status │ Site│
+│ 29J1234 │ Dell...  │ LAPTOP │ AVAIL  │ DO  │
+│ ...                                        │
+├────────────────────────────────────────────┤
+│ [Details] [Check Out] [Return] [Retire]   │
+└────────────────────────────────────────────┘
 
-Example concept
-For assignItem():
-Javapublic void assignItem(int itemId, String assignedTo, String jobSite, String notes) {    // 1. find item    // 2. confirm it's available    // 3. update item status to ASSIGNED    // 4. update assignedTo + jobSite    // 5. add transaction of type CHECKED_OUT}``Show more lines
+Even a Figma/paper sketch counts as "GUI sketch" for the MVP.
+Day 8 (July 10): Buffer / polish / demo
 
-Better version: do it atomically
-Inside DB code:
-Javaconn.setAutoCommit(false);// update items// insert transactionsconn.commit();Show more lines
-If something fails:
-Javaconn.rollback();Show more lines
-That’s very professional and absolutely worth learning.
+💡 Your "nice-to-haves" — where they fit
 
-Minimum complete backend logic for your MVP
-If you want your backend to be “done enough” before GUI, these are the must-have operations.
 
-1. Add item
-Creates item in DB and logs ITEM_ADDED.
-Input
+Wish                                             MVP-friendly?                                                             Suggestion
+Doorway scanner (microcontroller + barcodes)    ❌ Post-MVP                                      Design the DB schema now to support it (barcode field on Item, SCANNED_IN/SCANNED_OUT in TransactionType), build hardware later
+CTA access / auth                               ❌ Post-MVP                                       Add a User table + login screen in v2
+Multiple sites (DO, ADM LOT 2)                  ✅ Already there!                                Your jobSite field handles this. Consider making it an enum or a lookup table
+Item valuation + total                          ✅ Easy add                                  Add BigDecimal price to Item, one SUM() SQL query for total
+Search by location/barcode/type/name            ✅ MVP                                       This IS the searchItems() I recommended above
 
-name
-category
-optional asset tag
-quantity
-notes
 
-Output
 
-saved item
-matching transaction
+Two quick wins to add now (very low effort):
 
+Add private BigDecimal price to Item → unlocks valuation
+Rename unitNB semantics to also serve as barcode, OR add a separate barcode field → unlocks future scanner
 
-2. Assign item
-Updates current state and logs CHECKED_OUT.
-Input
 
-item ID
-assigned employee
-job site
-notes
+✅ What looks good
 
-Business rule
-Only assign if:
+Package structure (model, database, app) is clean
+Enums (ItemStatus, ItemType, TransactionType) are well thought out
+Item has thoughtful dual constructors (serialized vs. non-serialized) with good domain comments
+DBManager.close() handles null + already-closed correctly
+Using PreparedStatement (SQL injection safe) ✅
 
-item exists
-item is AVAILABLE
-quantity is valid
-
-
-3. Return item
-Updates state to AVAILABLE, clears assignee/job site, logs RETURNED.
-
-4. Retire item
-Updates state to RETIRED, logs RETIRED.
-Do not hard delete immediately unless you really want that behavior.
-
-5. Search items
-Search by:
-
-asset tag
-item name
-assignedTo
-jobSite
-category
-
-
-6. Get all inventory
-Needed for GUI table and reports.
-
-7. Get transactions in date range
-Needed for your report requirement.
-
-Suggested validation rules
-Your backend should enforce these:
-For items
-
-name cannot be blank
-category cannot be blank
-quantity must be greater than 0
-assetTag must be unique if provided
-
-For assignment
-
-item must exist
-item cannot already be retired
-item should usually be available before assignment
-jobSite should not be blank when assigning project equipment
-
-
-Strong recommendation: add these files now
-Before GUI, I’d add these new files:
-
-ItemStatus.java
-Javapackage com.victor.storageroom.model;public enum ItemStatus {    AVAILABLE,    ASSIGNED,    IN_REPAIR,    RETIRED,    LOST}Show more lines
-
-TransactionType.java
-Javapackage com.victor.storageroom.model;public enum TransactionType {    ITEM_ADDED,    CHECKED_OUT,    RETURNED,    TRANSFERRED,    STATUS_CHANGED,    RETIRED}Show more lines
-
-InventoryService.java
-This is where your backend logic should go.
-Even if it starts small, that file will make your app much cleaner.
-
-Suggested Main.java role after restructuring
-Keep Main.java small.
-It should mostly do:
-
-initialize DB
-create tables
-maybe add sample data while testing
-later launch GUI
-
-Example:
-Javapackage com.victor.storageroom.app;import com.victor.storageroom.database.DBManager;public class Main {    public static void main(String[] args) {        DBManager dbManager = new DBManager();        dbManager.createTables();        System.out.println("Database initialized successfully.");    }}Show more lines
-That is clean.
-
-What to do in IntelliJ right now (practical checklist)
-Phase 1 — Restructure
-
-Create package:
-
-com.victor.storageroom
-
-
-Create subpackages:
-
-app
-model
-database
-service
-
-
-Move:
-
-Main.java → app
-Item.java → model
-Transaction.java → model
-DBManager.java → database
-
-
-
-
-Phase 2 — Clean package declarations
-Update each file’s package ...;
-
-Phase 3 — Add enums
-Create:
-
-ItemStatus.java
-TransactionType.java
-
-
-Phase 4 — Define schema
-Make sure items and transactions tables match your class design
-
-Phase 5 — Create service layer
-Add:
-
-InventoryService.java
-
-with methods:
-
-addNewItem(...)
-assignItem(...)
-returnItem(...)
-retireItem(...)
-getAllItems()
-getTransactionsBetween(...)
-
-
-Phase 6 — Test in console before GUI
-Before any interface, confirm:
-
-add item works
-assign works
-return works
-retire works
-transactions are created properly
-
-This is how you save yourself a lot of GUI debugging later.
-
-About your .gitignore
-You said you didn’t start one, but your screenshot actually shows a .gitignore file already in the project root. It may be empty or auto-generated.
-Here’s a good version you can use for this project:
-.ignore# IntelliJ.idea/*.iml# Maven build outputtarget/# Logs*.log# OS files.DS_StoreThumbs.db# SQLite temp files*.db-wal*.db-shmShow more lines
-If your actual database file is just for testing and shouldn’t be stored in Git, you could also ignore:
-.ignore*.dbShow more lines
-But if you want a demo DB in the repo, don’t ignore it.
-
-Best next step with me
-If you want, I can help you in the most useful way possible by doing this one file at a time.
-Best sequence:
-
-I draft the exact final version of Item.java
-then the exact final version of Transaction.java
-then the exact final version of DBManager.java
-then the exact final version of InventoryService.java
-then the exact final version of Main.java
-
-That would give you a clean backend foundation before GUI.
-
-My recommendation
-Send me your code by pasting the contents directly in chat, starting with:
-JavaItem.javaShow more lines
-and I’ll rewrite/refine it into the package structure above.
-If you want, I can also skip straight to giving you a full clean starter backend set of files for:
-
-Item.java
-Transaction.java
-ItemStatus.java
-TransactionType.java
-DBManager.java
-InventoryService.java
-Main.java
-
-so you can paste them into IntelliJ and adapt from there.

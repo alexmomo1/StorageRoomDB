@@ -1,23 +1,19 @@
-package com.valex.itstorage.app;
-
+package com.valex.itstorage.model;
 import java.time.LocalDate;
 
 public class Transaction {
 
     private String unitNB, shortDescr, statusE1, sysAdmin;
-    private boolean used, serialized;
     private long oldJobSiteNB, newJobSiteNB;
     private LocalDate date;
 
-    public Transaction(String unitNB, String shortDescr, String sysAdmin, long oldJobSiteNB, long newJobSiteNB) {
+    public Transaction(String unitNB, String shortDescr, String sysAdmin, long oldJobSiteNB, long newJobSiteNB, String newStatusE1) {
         this.unitNB = unitNB;
         this.shortDescr = shortDescr;
-        this.statusE1 = statusE1;
+        this.statusE1 = newStatusE1;
         this.sysAdmin = sysAdmin;
-        this.used = used;
-        this.serialized = serialized;
         this.oldJobSiteNB = oldJobSiteNB;
         this.newJobSiteNB = newJobSiteNB;
-        this.date = date;
+        this.date = LocalDate.now();
     }
 }

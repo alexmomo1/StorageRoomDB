@@ -82,16 +82,14 @@ public class DBManager {
                         rs.getString("unitNB"),
                         rs.getString("shortDescr"),
                         rs.getString("statusE1"),
-                        rs.getString("sysAdmin"),
-                        rs.getString("url"),
-                        rs.getString("notes"),
                         rs.getString("itemStatus"),
                         rs.getString("itemType"),
-                        rs.getString("assignedTo"),
                         rs.getString("jobSite"),
-                        rs.getInt("used") == 1,
-                        rs.getInt("serialized") == 1,
-                        LocalDate.parse(rs.getString("lastUpdateDate"))
+                        rs.getString("assignedTo"),
+                        rs.getString("notes"),
+                        rs.getString("sysAdmin"),
+                        rs.getString("url"),
+                        rs.getInt("used") == 1
                 );
                 items.add(item);
             }
@@ -99,12 +97,12 @@ public class DBManager {
         return items;
     }
 
-    private Item mapRowToItem(ResultSet rs){
 
-    }
 
   /*
+private Item mapRowToItem(ResultSet rs){
 
+    }
 connect()
 createTables()
 addItem(Item item)

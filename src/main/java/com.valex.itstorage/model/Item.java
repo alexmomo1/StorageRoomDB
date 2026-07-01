@@ -11,10 +11,17 @@ public class Item {
     private LocalDate lastUpdateDate;
 
     //serialized
-    public Item(String unitNB, String shortDescr, String statusE1,
-                String itemStatuss, String itemTypee, String jobSite,
-                String assignedTo, String notes,
-                String sysAdmin, String url, boolean used) {
+    public Item(String unitNB,
+                String shortDescr,
+                String statusE1,
+                String itemStatuss,
+                String itemTypee,
+                String jobSite,
+                String assignedTo,
+                String notes,
+                String sysAdmin,
+                String url,
+                boolean used) {
         this.unitNB = unitNB;
         this.shortDescr = shortDescr;
         this.statusE1 = statusE1;

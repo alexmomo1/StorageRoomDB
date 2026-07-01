@@ -9,5 +9,10 @@ enum ItemType {
     NETWORK_EQUIP,
     MISC,
     CABLE_MANAGEMENT,
-    PERIPHERAL
+    PERIPHERAL;
+
+    @Override
+    public String toString() {
+        return "string";
+    }
 }

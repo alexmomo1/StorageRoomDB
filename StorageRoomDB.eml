@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<component jdk="openjdk-26" jdk_type="JavaSDK">
+<component jdk="corretto-21" jdk_type="JavaSDK">
 	<contentEntry url="file://$MODULE_DIR$"/>
-	<contentEntry url="file://$MODULE_DIR$"/>
+	<contentEntry url="file://$MODULE_DIR$">
+		<testFolder url="file://$MODULE_DIR$/src/test"/>
+	</contentEntry>
 </component>
