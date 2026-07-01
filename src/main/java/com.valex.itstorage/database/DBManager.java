@@ -3,6 +3,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import com.valex.itstorage.model.Item;
+import java.time.LocalDate;
 
 public class DBManager {
 
@@ -57,7 +58,7 @@ public class DBManager {
             pstmt.setString(4, item.getSysAdmin());
             pstmt.setString(5, item.getUrl());
             pstmt.setString(6, item.getNotes());
-            pstmt.setString(7, item.getItemStatus().toString())
+            pstmt.setString(7, item.getItemStatus().toString());
             pstmt.setString(8, item.getItemType().toString());
             pstmt.setString(9, item.getAssignedTo());
             pstmt.setString(10, item.getJobSite());
@@ -89,7 +90,7 @@ public class DBManager {
                         rs.getString("assignedTo"),
                         rs.getString("jobSite"),
                         rs.getInt("used") == 1,
-                        rs.getString("serialized") == 1,
+                        rs.getInt("serialized") == 1,
                         LocalDate.parse(rs.getString("lastUpdateDate"))
                 );
                 items.add(item);

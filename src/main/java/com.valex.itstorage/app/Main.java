@@ -5,10 +5,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import com.valex.itstorage.database.DBManager;
 import com.valex.itstorage.model.Item;
-import com.valex.itstorage.model.Transaction;
 
 public class Main {
-    static void main(String[] args) {
+    public static void main(String[] args) {
         LocalDate date = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
 
