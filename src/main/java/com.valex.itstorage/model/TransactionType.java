@@ -8,5 +8,5 @@ public enum TransactionType {
     REPAIRED,
     DELETED,
     STATUS_CHANGED,
-    TRANSFERED
+    TRANSFERRED
 }
