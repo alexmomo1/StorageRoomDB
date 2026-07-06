@@ -15,7 +15,7 @@ TECHNOLOGY
 -Git
 
 FUTURES IMPROVEMENTS
--Notifications are not yet part of the program
+-Notifications low inventory
 -GUI
 -Web integration
 -Bar code scanner support
