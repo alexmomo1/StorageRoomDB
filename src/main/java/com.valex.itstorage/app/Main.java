@@ -3,6 +3,7 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import com.valex.itstorage.database.DBManager;
+import com.valex.itstorage.model.Item;
 
 public class Main {
     public static void main(String[] args) {
@@ -11,16 +12,35 @@ public class Main {
 
         String formattedDate = date.format(formatter);
         System.out.println(formattedDate);
-        DBManager db = null;
 
-        try {
-            db = new DBManager();
+
+        try (DBManager db = new DBManager()){
+            Item item = new Item(
+                    "29J12345",
+                    "Dell Latitude 7440",
+                    "AC",
+                    "ASSIGNED",
+                    "LAPTOP",
+                    "MTL DO",
+                    "VICTOR ALEXANDRE FRINGS-MORALES",
+                    "Demo item",
+                    "VAFM",
+                    null,
+                    true
+            );
+
+            db.insertItem(item);
+
+            for (Item dbItem : db.getAllItems()) {
+                System.out.println(
+                        dbItem.getUnitNB() + " | " +
+                                dbItem.getShortDescr() + " | " +
+                                dbItem.getItemStatus()
+                );
+            }
+            db.close();
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            if (db != null) {
-                db.close();
-            }
         }
     }
 
