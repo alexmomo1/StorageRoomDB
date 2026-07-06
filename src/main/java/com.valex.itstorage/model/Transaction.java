@@ -3,18 +3,20 @@ import java.time.LocalDate;
 
 public class Transaction {
 
-    private String unitNB, shortDescr, statusE1, sysAdmin;
+    private String unitNB, shortDescr, e1Status, sysAdmin;
     private long id, oldJobSiteNB, newJobSiteNB;
     private LocalDate date;
     private TransactionType type;
     private static long idCounter = 0;
 
-    public Transaction(TransactionType type,String unitNB, String shortDescr, String sysAdmin, long oldJobSiteNB, long newJobSiteNB, String newStatusE1) {
+    public Transaction(TransactionType type,String unitNB, String shortDescr,
+                       String sysAdmin, long oldJobSiteNB, long newJobSiteNB,
+                       String newE1Status) {
         this.id = idCounter++;
         this.type = type;
         this.unitNB = unitNB;
         this.shortDescr = shortDescr;
-        this.statusE1 = newStatusE1;
+        this.e1Status = newE1Status;
         this.sysAdmin = sysAdmin;
         this.oldJobSiteNB = oldJobSiteNB;
         this.newJobSiteNB = newJobSiteNB;
@@ -29,8 +31,8 @@ public class Transaction {
         return shortDescr;
     }
 
-    public String getStatusE1() {
-        return statusE1;
+    public String getE1Status() {
+        return e1Status;
     }
 
     public String getSysAdmin() {

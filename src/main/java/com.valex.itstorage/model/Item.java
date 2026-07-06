@@ -3,7 +3,7 @@ import java.time.LocalDate;
 
 public class Item {
 
-    private String unitNB, shortDescr, statusE1, sysAdmin, url, assignedTo, notes;
+    private String unitNB, shortDescr, e1Status, sysAdmin, url, assignedTo, notes;
     private ItemStatus itemStatus;
     private ItemType itemType;
     private String jobSite;
@@ -12,7 +12,7 @@ public class Item {
 
     public Item(String unitNB,
                 String shortDescr,
-                String statusE1,
+                String e1Status,
                 String itemStatus,
                 String itemType,
                 String jobSite,
@@ -23,7 +23,7 @@ public class Item {
                 boolean used) {
         this.unitNB = unitNB;
         this.shortDescr = shortDescr;
-        this.statusE1 = statusE1;
+        this.e1Status = e1Status;
         this.sysAdmin = sysAdmin;
         this.url = url;
         this.used = used;
@@ -40,7 +40,7 @@ public class Item {
     // DataBase constructor only
     public Item(String unitNB,
                 String shortDescr,
-                String statusE1,
+                String e1Status,
                 ItemStatus itemStatus,
                 ItemType itemType,
                 String jobSite,
@@ -55,7 +55,7 @@ public class Item {
 
         this.unitNB = unitNB;
         this.shortDescr = shortDescr;
-        this.statusE1 = statusE1;
+        this.e1Status = e1Status;
         this.itemStatus = itemStatus;
         this.itemType = itemType;
         this.jobSite = jobSite;
@@ -74,7 +74,7 @@ public class Item {
     // Getters
     public String getUnitNB() { return unitNB; }
     public String getShortDescr() { return shortDescr; } // name or what it does (cable length, data throughput etc.)
-    public String getStatusE1() { return statusE1; } // AC or AV
+    public String getE1Status() { return e1Status; } // AC or AV
     public String getSysAdmin() { return sysAdmin; } // name of whoever added its last update to e1
     public String getUrl() { return url; }
     public boolean isUsed() { return used; } // is it sealed and still in original packaging

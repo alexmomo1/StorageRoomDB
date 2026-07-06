@@ -38,7 +38,6 @@ public class Main {
                                 dbItem.getItemStatus()
                 );
             }
-            db.close();
         } catch (Exception e) {
             e.printStackTrace();
         }

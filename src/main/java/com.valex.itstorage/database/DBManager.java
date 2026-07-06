@@ -2,13 +2,14 @@ package com.valex.itstorage.database;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.lang.AutoCloseable;
 import com.valex.itstorage.model.Item;
 import com.valex.itstorage.model.ItemStatus;
 import com.valex.itstorage.model.ItemType;
 
 import java.time.LocalDate;
 
-public class DBManager {
+public class DBManager implements AutoCloseable {
 
     String url = "jdbc:sqlite:inventory.db";
     private Connection conn;
@@ -27,7 +28,7 @@ public class DBManager {
             CREATE TABLE IF NOT EXISTS items (
                 unitNB TEXT UNIQUE PRIMARY KEY,
                 shortDescr TEXT NOT NULL,
-                statusE1 TEXT NOT NULL,
+                e1Status TEXT NOT NULL,
                 sysAdmin TEXT NOT NULL,
                 url TEXT,
                 notes TEXT,
@@ -51,7 +52,7 @@ public class DBManager {
     public void insertItem(Item item) throws SQLException {
         String sql = """
                 INSERT INTO items(
-                    unitNB, shortDescr,statusE1, sysAdmin, url, notes,
+                    unitNB, shortDescr,e1Status, sysAdmin, url, notes,
                     itemStatus, itemType,assignedTo, jobSite,
                     used, serialized, lastUpdateDate, creationDate
                 )
@@ -60,7 +61,7 @@ public class DBManager {
         try(PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, item.getUnitNB());
             pstmt.setString(2, item.getShortDescr());
-            pstmt.setString(3, item.getStatusE1());
+            pstmt.setString(3, item.getE1Status());
             pstmt.setString(4, item.getSysAdmin());
             pstmt.setString(5, item.getUrl());
             pstmt.setString(6, item.getNotes());
@@ -96,7 +97,7 @@ public class DBManager {
         return new Item(
                 rs.getString("unitNB"),
                 rs.getString("shortDescr"),
-                rs.getString("statusE1"),
+                rs.getString("e1Status"),
 
                 // convert DB string → enum safely
                 ItemStatus.valueOf(rs.getString("itemStatus")),
@@ -135,17 +136,16 @@ getTransactionsForItem(int itemId)
 
      */
 
-    public void close(){
-        if (conn != null) {
-            try {
-                if (!conn.isClosed()) {
-                    conn.close();
-                    System.out.println("Database connection closed.");
-                }
-            } catch (SQLException e) {
-                System.err.println("Error closing connection.");
-                e.printStackTrace();
+
+    @Override
+    public void close() {
+        try {
+            if (conn != null && !conn.isClosed()) {
+                conn.close();
             }
+        } catch (SQLException e) {
+            System.err.println("Error closing DB: " + e.getMessage());
         }
     }
+
 }
