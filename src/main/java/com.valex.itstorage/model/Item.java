@@ -86,4 +86,24 @@ public class Item {
     public ItemStatus getItemStatus() {return itemStatus;}
     public ItemType getItemType() {return itemType;}
     public String getJobSite() {return jobSite;}
+
+
+    @Override
+    public String toString() {
+        return "Item{" +
+                ", unitNumber='" + unitNB + '\'' +
+                ", description='" + shortDescr + '\'' +
+                ", itemStatus=" + itemStatus +
+                ", itemType=" + itemType +
+                ", assignedTo='" + assignedTo + '\'' +
+                ", jobSite='" + jobSite + '\'' +
+                ", used=" + used +
+                ", serialized=" + serialized +
+                ", lastUpdateDate=" + lastUpdateDate +
+                ", creationDate=" + creationDate +
+                '}';
+    }
+
+
+
 }
