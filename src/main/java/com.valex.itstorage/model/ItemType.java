@@ -1,6 +1,6 @@
 package com.valex.itstorage.model;
 
-enum ItemType {
+public enum ItemType {
     LAPTOP,
     MONITOR,
     UPS,
@@ -10,9 +10,4 @@ enum ItemType {
     MISC,
     CABLE_MANAGEMENT,
     PERIPHERAL;
-
-    @Override
-    public String toString() {
-        return "string";
-    }
 }
