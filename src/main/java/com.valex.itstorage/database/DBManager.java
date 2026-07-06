@@ -3,6 +3,9 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import com.valex.itstorage.model.Item;
+import com.valex.itstorage.model.ItemStatus;
+import com.valex.itstorage.model.ItemType;
+
 import java.time.LocalDate;
 
 public class DBManager {
@@ -34,7 +37,8 @@ public class DBManager {
                 jobSite TEXT,
                 used INTEGER NOT NULL CHECK (used IN (0,1)),
                 serialized INTEGER NOT NULL CHECK (serialized IN (0,1)),
-                lastUpdateDate TEXT NOT NULL
+                lastUpdateDate TEXT NOT NULL,
+                creationDate TEXT NOT NULL
             );
         """;
 
@@ -46,10 +50,12 @@ public class DBManager {
     //insert item function
     public void insertItem(Item item) throws SQLException {
         String sql = """
-                INSERT INTO items(unitNB, shortDescr,
-                statusE1, sysAdmin, url, notes, itemStatus, itemType, 
-                assignedTo, jobSite, used, serialized, lastUpdateDate)
-                VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)
+                INSERT INTO items(
+                    unitNB, shortDescr,statusE1, sysAdmin, url, notes,
+                    itemStatus, itemType,assignedTo, jobSite,
+                    used, serialized, lastUpdateDate, creationDate
+                )
+                VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)
                 """;
         try(PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, item.getUnitNB());
@@ -65,44 +71,56 @@ public class DBManager {
             pstmt.setInt(11, item.isUsed() ? 1 : 0);
             pstmt.setInt(12, item.isSerialized() ? 1 : 0);
             pstmt.setString(13, item.getLastUpdateDate().toString());
+            pstmt.setString(14, item.getCreationDate().toString());
 
             pstmt.executeUpdate();
         }
     }
     // return list of all items
-    public List<Item> getAllItems() throws SQLException{
+    public List<Item> getAllItems() throws SQLException {
         List<Item> items = new ArrayList<>();
         String sql = "SELECT * FROM items";
 
-        try (Statement stmt = conn.createStatement()) {
-            ResultSet rs = stmt.executeQuery(sql);
+        try (Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
 
-            while (rs.next()){
-                Item item = new Item(
-                        rs.getString("unitNB"),
-                        rs.getString("shortDescr"),
-                        rs.getString("statusE1"),
-                        rs.getString("itemStatus"),
-                        rs.getString("itemType"),
-                        rs.getString("jobSite"),
-                        rs.getString("assignedTo"),
-                        rs.getString("notes"),
-                        rs.getString("sysAdmin"),
-                        rs.getString("url"),
-                        rs.getInt("used") == 1
-                );
-                items.add(item);
+            while (rs.next()) {
+                items.add(mapRowToItem(rs));
             }
         }
+
         return items;
+    }
+
+    private Item mapRowToItem(ResultSet rs) throws SQLException {
+        return new Item(
+                rs.getString("unitNB"),
+                rs.getString("shortDescr"),
+                rs.getString("statusE1"),
+
+                // convert DB string → enum safely
+                ItemStatus.valueOf(rs.getString("itemStatus")),
+                ItemType.valueOf(rs.getString("itemType")),
+
+                rs.getString("jobSite"),
+                rs.getString("assignedTo"),
+                rs.getString("notes"),
+                rs.getString("sysAdmin"),
+                rs.getString("url"),
+
+                rs.getInt("used") == 1,
+                rs.getInt("serialized") == 1,
+
+                // convert DB string → LocalDate
+                LocalDate.parse(rs.getString("lastUpdateDate")),
+                LocalDate.parse(rs.getString("creationDate"))
+        );
     }
 
 
 
   /*
-private Item mapRowToItem(ResultSet rs){
 
-    }
 connect()
 createTables()
 addItem(Item item)
