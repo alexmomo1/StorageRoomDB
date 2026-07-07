@@ -43,23 +43,7 @@ public class Main {
         }
     }
 
-    private static void printAllItems(Connection conn) throws SQLException {
-        String sql = "SELECT * FROM items";
 
-        try (Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-
-            System.out.println("Items in database:");
-
-            while (rs.next()) {
-                System.out.println(
-                        rs.getInt("id") + " | " +
-                                rs.getString("name") + " | " +
-                                rs.getString("status")
-                );
-            }
-        }
-    }
 }
 
 
