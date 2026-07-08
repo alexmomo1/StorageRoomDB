@@ -46,6 +46,12 @@ FUTURES IMPROVEMENTS
 
 -RoadMap: addItem(Item item), updateItem(Item item), deleteItem(Item item), getItemByType(Type T), addTransaction(Transaction transaction), getTransactionBetween(String Start, String end), getTransactionForItem(Item item)
 
+-CLI --> Add item, View item, Search items, Update item, Delete item
+
+-REST API
+
+-CSV export
+
 -Notifications on low inventory
 
 -GUI
