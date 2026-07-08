@@ -19,11 +19,11 @@ public class DBManager implements AutoCloseable {
         conn = DriverManager.getConnection(url);
         System.out.println("Connected to SQLite.");
 
-        createTable();
+        createItemTable();
     }
 
-    //creates a database table
-    private void createTable() throws SQLException {
+    //creates a database table of items
+    private void createItemTable() throws SQLException {
         String sql = """
             CREATE TABLE IF NOT EXISTS items (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
