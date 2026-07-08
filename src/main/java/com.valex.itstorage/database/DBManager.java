@@ -26,7 +26,8 @@ public class DBManager implements AutoCloseable {
     private void createTable() throws SQLException {
         String sql = """
             CREATE TABLE IF NOT EXISTS items (
-                unitNB TEXT UNIQUE PRIMARY KEY,
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                unitNB TEXT UNIQUE,
                 shortDescr TEXT NOT NULL,
                 e1Status TEXT NOT NULL,
                 sysAdmin TEXT NOT NULL,
@@ -52,13 +53,14 @@ public class DBManager implements AutoCloseable {
     public void insertItem(Item item) throws SQLException {
         String sql = """
                 INSERT INTO items(
-                    unitNB, shortDescr,e1Status, sysAdmin, url, notes,
+                    id, unitNB, shortDescr,e1Status, sysAdmin, url, notes,
                     itemStatus, itemType,assignedTo, jobSite,
                     used, serialized, lastUpdateDate, creationDate
                 )
                 VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)
                 """;
         try(PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, item.getID());
             pstmt.setString(1, item.getUnitNB());
             pstmt.setString(2, item.getShortDescr());
             pstmt.setString(3, item.getE1Status());
@@ -95,6 +97,7 @@ public class DBManager implements AutoCloseable {
 
     private Item mapRowToItem(ResultSet rs) throws SQLException {
         return new Item(
+                rs.getInt("id"),
                 rs.getString("unitNB"),
                 rs.getString("shortDescr"),
                 rs.getString("e1Status"),

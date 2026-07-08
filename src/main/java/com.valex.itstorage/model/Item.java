@@ -3,6 +3,8 @@ import java.time.LocalDate;
 
 public class Item {
 
+    private static int idCounter = 0;
+    private int id;
     private String unitNB, shortDescr, e1Status, sysAdmin, url, assignedTo, notes;
     private ItemStatus itemStatus;
     private ItemType itemType;
@@ -10,7 +12,8 @@ public class Item {
     private boolean used, serialized;
     private LocalDate lastUpdateDate, creationDate ;
 
-    public Item(String unitNB,
+    public Item(
+                String unitNB,
                 String shortDescr,
                 String e1Status,
                 String itemStatus,
@@ -21,6 +24,7 @@ public class Item {
                 String sysAdmin,
                 String url,
                 boolean used) {
+        this.id = ++idCounter;
         this.unitNB = unitNB;
         this.shortDescr = shortDescr;
         this.e1Status = e1Status;
@@ -38,7 +42,9 @@ public class Item {
     }
 
     // DataBase constructor only
-    public Item(String unitNB,
+    public Item(
+                int id,
+                String unitNB,
                 String shortDescr,
                 String e1Status,
                 ItemStatus itemStatus,
@@ -52,7 +58,7 @@ public class Item {
                 boolean serialized,
                 LocalDate lastUpdateDate,
                 LocalDate creationDate) {
-
+        this.id = id;
         this.unitNB = unitNB;
         this.shortDescr = shortDescr;
         this.e1Status = e1Status;
@@ -72,6 +78,8 @@ public class Item {
 
 
     // Getters
+
+    public int getID() { return id; }
     public String getUnitNB() { return unitNB; }
     public String getShortDescr() { return shortDescr; } // name or what it does (cable length, data throughput etc.)
     public String getE1Status() { return e1Status; } // AC or AV
