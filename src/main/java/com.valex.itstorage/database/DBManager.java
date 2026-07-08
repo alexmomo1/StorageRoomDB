@@ -100,8 +100,8 @@ public class DBManager implements AutoCloseable {
                 rs.getString("e1Status"),
 
                 // convert DB string → enum safely
-                ItemStatus.valueOf(rs.getString("itemStatus")),
-                ItemType.valueOf(rs.getString("itemType")),
+                safeStatus(rs.getString("itemStatus")),
+                safeType(rs.getString("itemType")),
 
                 rs.getString("jobSite"),
                 rs.getString("assignedTo"),
@@ -116,6 +116,22 @@ public class DBManager implements AutoCloseable {
                 LocalDate.parse(rs.getString("lastUpdateDate")),
                 LocalDate.parse(rs.getString("creationDate"))
         );
+    }
+
+    private ItemStatus safeStatus(String value) {
+        try {
+            return ItemStatus.valueOf(value);
+        } catch (Exception e) {
+            return ItemStatus.AVAILABLE; // if invalid
+        }
+    }
+
+    private ItemType safeType(String value) {
+        try {
+            return ItemType.valueOf(value);
+        } catch (Exception e) {
+            return ItemType.MISC; // if invalid
+        }
     }
 
 
