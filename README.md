@@ -28,18 +28,39 @@ TECHNOLOGY
 
 -JDBC (sqlite-jdbc)
 
+KNOWN LIMITATIONS
+---
+
+-NO user interface (everything done through main)
+
+-Incomplete CRUD
+
+-NO search
+
+
+-NO transaction history (not implemented yet)
+
+---
+FUTURES IMPROVEMENTS 
+---
+
+-RoadMap: addItem(Item item), updateItem(Item item), deleteItem(Item item), getItemByType(Type T), addTransaction(Transaction transaction), getTransactionBetween(String Start, String end), getTransactionForItem(Item item)
+
+-Notifications on low inventory
+
+-GUI
+
+-Web integration
+
+-Bar code scanner support
+
+-role-based authentication
+
+-cloud sync
+
+ HOW TO RUN THE MVP
+---
 ### Clone the repository
 '''bash
 git clone https://github.com/alexmomo1/StorageRoom
 cd StorageRoomDB
-
----
-FUTURES IMPROVEMENTS
----
--Notifications low inventory
--GUI
--Web integration
--Bar code scanner support
--role-based authentication
--cloud sync
- Additionnally, each item will have trackable IDs. Notifications will be sent whenever a consumable item is low in stock.
