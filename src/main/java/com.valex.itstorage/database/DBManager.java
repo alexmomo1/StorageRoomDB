@@ -57,24 +57,24 @@ public class DBManager implements AutoCloseable {
                     itemStatus, itemType,assignedTo, jobSite,
                     used, serialized, lastUpdateDate, creationDate
                 )
-                VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+                VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
                 """;
         try(PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, item.getID());
-            pstmt.setString(1, item.getUnitNB());
-            pstmt.setString(2, item.getShortDescr());
-            pstmt.setString(3, item.getE1Status());
-            pstmt.setString(4, item.getSysAdmin());
-            pstmt.setString(5, item.getUrl());
-            pstmt.setString(6, item.getNotes());
-            pstmt.setString(7, item.getItemStatus().toString());
-            pstmt.setString(8, item.getItemType().toString());
-            pstmt.setString(9, item.getAssignedTo());
-            pstmt.setString(10, item.getJobSite());
-            pstmt.setInt(11, item.isUsed() ? 1 : 0);
-            pstmt.setInt(12, item.isSerialized() ? 1 : 0);
-            pstmt.setString(13, item.getLastUpdateDate().toString());
-            pstmt.setString(14, item.getCreationDate().toString());
+            pstmt.setString(2, item.getUnitNB());
+            pstmt.setString(3, item.getShortDescr());
+            pstmt.setString(4, item.getE1Status());
+            pstmt.setString(5, item.getSysAdmin());
+            pstmt.setString(6, item.getUrl());
+            pstmt.setString(7, item.getNotes());
+            pstmt.setString(8, item.getItemStatus().toString());
+            pstmt.setString(9, item.getItemType().toString());
+            pstmt.setString(10, item.getAssignedTo());
+            pstmt.setString(11, item.getJobSite());
+            pstmt.setInt(12, item.isUsed() ? 1 : 0);
+            pstmt.setInt(13, item.isSerialized() ? 1 : 0);
+            pstmt.setString(14, item.getLastUpdateDate().toString());
+            pstmt.setString(15, item.getCreationDate().toString());
 
             pstmt.executeUpdate();
         }
@@ -141,8 +141,6 @@ public class DBManager implements AutoCloseable {
 
   /*
 
-connect()
-createTables()
 addItem(Item item)
 updateItem(Item item)
 deleteItem(int itemId)
