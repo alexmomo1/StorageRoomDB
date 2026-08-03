@@ -6,8 +6,7 @@ public enum ItemType {
     UPS,
     CABLE,
     DOCK,
-    NETWORK_EQUIP,
+    NETWORK,
     MISC,
-    CABLE_MANAGEMENT,
     PERIPHERAL;
 }
