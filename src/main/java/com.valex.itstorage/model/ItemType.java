@@ -8,5 +8,5 @@ public enum ItemType {
     DOCK,
     NETWORK,
     MISC,
-    PERIPHERAL;
+    PERIPHERAL
 }

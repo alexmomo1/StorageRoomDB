@@ -3,15 +3,16 @@ import java.time.LocalDate;
 
 public class Item {
 
-    //private static int idCounter = 0;
-    //private int id;
-    private String unitNB, shortDescr, sysAdmin, url, assignedTo, notes;
+
+    private final String unitNB;
+    private String shortDescr, sysAdmin, url, assignedTo, notes;
     private E1Status e1Status;
     private ItemStatus itemStatus;
     private ItemType itemType;
     private String jobSite;
     private boolean used, serialized;
-    private LocalDate lastUpdateDate, creationDate ;
+    private LocalDate lastUpdateDate;
+    private final LocalDate creationDate ;
 
     public Item(
                 String unitNB,
@@ -25,7 +26,6 @@ public class Item {
                 String sysAdmin,
                 String url,
                 boolean used) {
-        //this.id = ++idCounter;
         this.unitNB = unitNB;
         this.shortDescr = shortDescr;
         this.e1Status = E1Status.valueOf(e1Status);
