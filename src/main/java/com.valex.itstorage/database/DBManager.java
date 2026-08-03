@@ -3,6 +3,8 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.lang.AutoCloseable;
+
+import com.valex.itstorage.model.E1Status;
 import com.valex.itstorage.model.Item;
 import com.valex.itstorage.model.ItemStatus;
 import com.valex.itstorage.model.ItemType;
@@ -53,28 +55,27 @@ public class DBManager implements AutoCloseable {
     public void insertItem(Item item) throws SQLException {
         String sql = """
                 INSERT INTO items(
-                    id, unitNB, shortDescr,e1Status, sysAdmin, url, notes,
+                    unitNB, shortDescr,e1Status, sysAdmin, url, notes,
                     itemStatus, itemType,assignedTo, jobSite,
                     used, serialized, lastUpdateDate, creationDate
                 )
-                VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+                VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)
                 """;
         try(PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, item.getID());
-            pstmt.setString(2, item.getUnitNB());
-            pstmt.setString(3, item.getShortDescr());
-            pstmt.setString(4, item.getE1Status());
-            pstmt.setString(5, item.getSysAdmin());
-            pstmt.setString(6, item.getUrl());
-            pstmt.setString(7, item.getNotes());
-            pstmt.setString(8, item.getItemStatus().toString());
-            pstmt.setString(9, item.getItemType().toString());
-            pstmt.setString(10, item.getAssignedTo());
-            pstmt.setString(11, item.getJobSite());
-            pstmt.setInt(12, item.isUsed() ? 1 : 0);
-            pstmt.setInt(13, item.isSerialized() ? 1 : 0);
-            pstmt.setString(14, item.getLastUpdateDate().toString());
-            pstmt.setString(15, item.getCreationDate().toString());
+            pstmt.setString(1, item.getUnitNB());
+            pstmt.setString(2, item.getShortDescr());
+            pstmt.setString(3, item.getE1Status().toString());
+            pstmt.setString(4, item.getSysAdmin());
+            pstmt.setString(5, item.getUrl());
+            pstmt.setString(6, item.getNotes());
+            pstmt.setString(7, item.getItemStatus().toString());
+            pstmt.setString(8, item.getItemType().toString());
+            pstmt.setString(9, item.getAssignedTo());
+            pstmt.setString(10, item.getJobSite());
+            pstmt.setInt(11, item.isUsed() ? 1 : 0);
+            pstmt.setInt(12, item.isSerialized() ? 1 : 0);
+            pstmt.setString(13, item.getLastUpdateDate().toString());
+            pstmt.setString(14, item.getCreationDate().toString());
 
             pstmt.executeUpdate();
         }
@@ -97,12 +98,12 @@ public class DBManager implements AutoCloseable {
 
     private Item mapRowToItem(ResultSet rs) throws SQLException {
         return new Item(
-                rs.getInt("id"),
                 rs.getString("unitNB"),
                 rs.getString("shortDescr"),
-                rs.getString("e1Status"),
+
 
                 // convert DB string → enum safely
+                safeE1Status(rs.getString("e1Status")),
                 safeStatus(rs.getString("itemStatus")),
                 safeType(rs.getString("itemType")),
 
@@ -121,6 +122,15 @@ public class DBManager implements AutoCloseable {
         );
     }
 
+
+
+    public void resetDatabase() throws SQLException {
+        try (Statement stmt = conn.createStatement()) {
+            stmt.executeUpdate("DROP TABLE IF EXISTS items");
+        }
+        createItemTable();
+    }
+
     private ItemStatus safeStatus(String value) {
         try {
             return ItemStatus.valueOf(value);
@@ -137,11 +147,16 @@ public class DBManager implements AutoCloseable {
         }
     }
 
-
+    private E1Status safeE1Status(String value) {
+        try {
+            return E1Status.valueOf(value);
+        } catch (Exception e) {
+            return E1Status.UK; // if invalid
+        }
+    }
 
   /*
 
-addItem(Item item)
 updateItem(Item item)
 deleteItem(int itemId)
 getItemById(int id)
