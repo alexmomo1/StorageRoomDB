@@ -3,9 +3,10 @@ import java.time.LocalDate;
 
 public class Item {
 
-    private static int idCounter = 0;
-    private int id;
-    private String unitNB, shortDescr, e1Status, sysAdmin, url, assignedTo, notes;
+    //private static int idCounter = 0;
+    //private int id;
+    private String unitNB, shortDescr, sysAdmin, url, assignedTo, notes;
+    private E1Status e1Status;
     private ItemStatus itemStatus;
     private ItemType itemType;
     private String jobSite;
@@ -24,10 +25,10 @@ public class Item {
                 String sysAdmin,
                 String url,
                 boolean used) {
-        this.id = ++idCounter;
+        //this.id = ++idCounter;
         this.unitNB = unitNB;
         this.shortDescr = shortDescr;
-        this.e1Status = e1Status;
+        this.e1Status = E1Status.valueOf(e1Status);
         this.sysAdmin = sysAdmin;
         this.url = url;
         this.used = used;
@@ -43,10 +44,10 @@ public class Item {
 
     // DataBase constructor only
     public Item(
-                int id,
+                //int id,
                 String unitNB,
                 String shortDescr,
-                String e1Status,
+                E1Status e1Status,
                 ItemStatus itemStatus,
                 ItemType itemType,
                 String jobSite,
@@ -58,7 +59,7 @@ public class Item {
                 boolean serialized,
                 LocalDate lastUpdateDate,
                 LocalDate creationDate) {
-        this.id = id;
+        //this.id = id;
         this.unitNB = unitNB;
         this.shortDescr = shortDescr;
         this.e1Status = e1Status;
@@ -79,10 +80,10 @@ public class Item {
 
     // Getters
 
-    public int getID() { return id; }
+    //public int getID() { return id; }
     public String getUnitNB() { return unitNB; }
     public String getShortDescr() { return shortDescr; } // name or what it does (cable length, data throughput etc.)
-    public String getE1Status() { return e1Status; } // AC or AV
+    public E1Status getE1Status() { return e1Status; } // AC or AV
     public String getSysAdmin() { return sysAdmin; } // name of whoever added its last update to e1
     public String getUrl() { return url; }
     public boolean isUsed() { return used; } // is it sealed and still in original packaging
@@ -94,7 +95,6 @@ public class Item {
     public ItemStatus getItemStatus() {return itemStatus;}
     public ItemType getItemType() {return itemType;}
     public String getJobSite() {return jobSite;}
-
 
     @Override
     public String toString() {
